@@ -2,14 +2,14 @@
 <html ng-app="app">
 
 <head>
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <style>
-    .line-through {
-      color: #ff0000;
-      text-decoration: line-through;
-    }
-  </style>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        .line-through {
+            color: #ff0000;
+            text-decoration: line-through;
+        }
+    </style>
 
 </head>
 
@@ -22,146 +22,151 @@
 <!-- Angular Material Library -->
 <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.0.0/angular-material.min.js"></script>
 
+<script src="http://danielstern.github.io/ngAudio/angular.audio.js"></script>
+
 <script>
-  var app = angular.module('app', ['ngMaterial']);
+    var app = angular.module('app', ['ngMaterial', 'ngAudio']);
 
-  app.factory('focus', function($timeout, $window) {
-    return function(id) {
-      $timeout(function() {
-        var element = $window.document.getElementById(id);
-        if (element) {
-          element.focus();
+    app.factory('focus', function ($timeout, $window) {
+        return function (id) {
+            $timeout(function () {
+                var element = $window.document.getElementById(id);
+                if (element) {
+                    element.focus();
+                }
+            });
+        };
+    })
+
+    app.directive('eventFocus', function (focus) {
+        return function (scope, elem, attr) {
+            elem.on(attr.eventFocus, function () {
+                focus(attr.eventFocusId);
+            });
+
+            scope.$on('$destroy', function () {
+                element.off(attr.eventFocus);
+            });
+        };
+    })
+
+
+    app.controller('MainCtrl', function ($scope, $http, focus) {
+        var verbs = [];
+        var counter = 0;
+        var correct_counter = 0;
+        $scope.lastverbs = [];
+        $scope.counter = 0;
+        $scope.correct_counter = correct_counter;
+        var init = function () {
+
+            $http({
+                method: 'GET',
+                url: "https://raw.githubusercontent.com/kemitchell/english-irregular-verbs/master/index.json"
+            }).then(function successCallback(response) {
+                console.log("load verbs");
+                var data = response.data;
+                for (var idx in data) {
+                    data[idx].base = idx;
+                    verbs.push(data[idx]);
+                }
+
+                getRandomBaseVerb();
+                focus("pastsimple");
+            }, function errorCallback(response) {
+                console.log(response || "Request failed");
+            });
+        }();
+
+        function getRandomBaseVerb() {
+
+            var verb = verbs[Math.floor(Math.random() * verbs.length)];
+            $scope.verb = verb;
+
         }
-      });
-    };
-  })
 
-  app.directive('eventFocus', function(focus) {
-    return function(scope, elem, attr) {
-      elem.on(attr.eventFocus, function() {
-        focus(attr.eventFocusId);
-      });
+        $scope.submit = function () {
+            var correct = true;
 
-      scope.$on('$destroy', function() {
-        element.off(attr.eventFocus);
-      });
-    };
-  })
+            counter += 1;
+            correct_counter += 1;
 
 
-  app.controller('MainCtrl', function($scope, $http, focus) {
-    var verbs = [];
-    var counter = 0;
-    var correct_counter = 0;
-    $scope.lastverbs = [];
-    $scope.counter = 0;
-    $scope.correct_counter = correct_counter;
-    var init = function() {
+            if ($scope.verb.past != $scope.verb.form_pastsimple) {
+                correct = false;
+                correct_counter -= .5;
+                $scope.verb.past_correct = false;
+            }
 
-      $http({
-        method: 'GET',
-        url: "https://raw.githubusercontent.com/kemitchell/english-irregular-verbs/master/index.json"
-      }).
-      then(function successCallback(response) {
-        console.log("load verbs");
-        var data = response.data;
-        for (var idx in data) {
-          data[idx].base = idx;
-          verbs.push(data[idx]);
+            if ($scope.verb.participles[0] != $scope.verb.form_pastparticiple && $scope.verb.participles[1] != $scope.verb.form_pastparticiple) {
+                correct = false;
+                correct_counter -= .5;
+                $scope.verb.participle_correct = false;
+            }
+
+            $scope.verb.correct = correct;
+            $scope.counter = counter;
+            $scope.correct_counter = correct_counter;
+
+            $scope.verb.id = counter;
+            $scope.lastverbs.unshift($scope.verb);
+
+            getRandomBaseVerb();
+            $scope.pastsimple = "";
+            $scope.pastparticiple = "";
+
+            $scope.irregular_form.$setPristine();
+            focus("pastsimple");
         }
 
-        getRandomBaseVerb();
-        focus("pastsimple");
-      }, function errorCallback(response) {
-        console.log(response || "Request failed");
-      });
-    }();
 
-    function getRandomBaseVerb() {
-
-      var verb = verbs[Math.floor(Math.random() * verbs.length)];
-      $scope.verb = verb;
-
-    }
-
-    $scope.submit = function() {
-      var correct = true;
-
-      counter +=1;
-      correct_counter +=1;
-
-
-      if ($scope.verb.past != $scope.verb.form_pastsimple) {
-        correct = false;
-        correct_counter -=.5;
-        $scope.verb.past_correct = false;
-      }
-
-      if ($scope.verb.participles[0] != $scope.verb.form_pastparticiple && $scope.verb.participles[1] != $scope.verb.form_pastparticiple) {
-        correct = false;
-        correct_counter -=.5;
-        $scope.verb.participle_correct = false;
-      }
-
-      $scope.verb.correct = correct;
-      $scope.counter = counter;
-      $scope.correct_counter = correct_counter;
-
-      $scope.verb.id = counter;
-      $scope.lastverbs.unshift($scope.verb);
-
-      getRandomBaseVerb();
-      $scope.pastsimple = "";
-      $scope.pastparticiple = "";
-
-      $scope.irregular_form.$setPristine();
-      focus("pastsimple");
-    }
-
-
-  });
+    });
 </script>
 <form ng-submit="submit()" id="irregular_form" name="irregular_form">
-  <md-input-container>
-    <input type="text" id="base" ng-model="verb.base" />
-  </md-input-container>
+    <md-input-container>
+        <input type="text" id="base" ng-model="verb.base"/>
+    </md-input-container>
 
-  <md-input-container>
-    <input type="text" ng-model="verb.form_pastsimple" id="pastsimple"  class ="pull-right" required autofocus />
-    <label for="pastsimple">past simple</label>
-  </md-input-container>
+    <md-input-container>
+        <input type="text" ng-model="verb.form_pastsimple" id="pastsimple" class="pull-right" required autofocus/>
+        <label for="pastsimple">past simple</label>
+    </md-input-container>
 
-  <md-input-container>
-    <input type="text" ng-model="verb.form_pastparticiple" id="pastparticiple" required />
-    <label for="pastparticiple">past participle</label>
-  </md-input-container>
-  <button type="submit" style="display:none;">Ok</button>
-  <p class="md-display-1" style="display: inline;padding-right: 30px; float: right" >{{correct_counter}}/{{counter}}</p>
+    <md-input-container>
+        <input type="text" ng-model="verb.form_pastparticiple" id="pastparticiple" required/>
+        <label for="pastparticiple">past participle</label>
+    </md-input-container>
+    <md-input-container style="margin-left: 35px;">
+        <button type="submit" style="display:none;">Ok</button>
+        <p class="md-display-1">
+            {{correct_counter}}/{{counter}}</p>
+    </md-input-container>
 </form>
-  <md-list-item ng-repeat="verb in lastverbs">
+<md-list>
+    <md-list-item ng-repeat="verb in lastverbs">
 
-    <p>#{{verb.id}} {{ verb.base }} </p>
+        <p>#{{verb.id}} {{ verb.base }} </p>
 
 
-    <p class="{{pastsimpleClass}}"><span ng-if="verb.past_correct == false" class="line-through">
+        <p class="{{pastsimpleClass}}"><span ng-if="verb.past_correct == false" class="line-through">
         {{ verb.form_pastsimple}}
       </span> {{ verb.past }} </p>
 
 
-    <p class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
+        <p class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
         {{ verb.form_pastparticiple}}
       </span> {{ verb.participles[0] }} </p>
 
       <span ng-if="verb.correct==true">
-      <md-icon style="color:blue;" > done </md-icon>
+      <md-icon style="color:blue;"> done</md-icon>
      </span>
       <span ng-if="verb.correct != true">
-       <md-icon style="color:red;" > error </md-icon>
+       <md-icon style="color:red;"> error</md-icon>
      </span>
 
 
-  </md-list-item>
-
+    </md-list-item>
+</md-list>
 </body>
 
 
