@@ -81,7 +81,7 @@
         function getRandomBaseVerb() {
 
             var verb = verbs[Math.floor(Math.random() * verbs.length)];
-            $scope.verb = verb;
+            $scope.verb = Object.create(verb);
 
         }
 
