@@ -1,1 +1,1 @@
-Simple application  for practicing irregular verbs
+Simple application  for practicing irregular verbs.
