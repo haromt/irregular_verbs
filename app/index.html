@@ -92,13 +92,13 @@
             correct_counter += 1;
 
 
-            if ($scope.verb.past != $scope.verb.form_pastsimple) {
+            if ($scope.verb.past != $scope.verb.form_pastsimple.toLowerCase() ) {
                 correct = false;
                 correct_counter -= .5;
                 $scope.verb.past_correct = false;
             }
 
-            if ($scope.verb.participles[0] != $scope.verb.form_pastparticiple && $scope.verb.participles[1] != $scope.verb.form_pastparticiple) {
+            if ($scope.verb.participles[0] != $scope.verb.form_pastparticiple.toLowerCase()  && $scope.verb.participles[1]  != $scope.verb.form_pastparticiple.toLowerCase() ) {
                 correct = false;
                 correct_counter -= .5;
                 $scope.verb.participle_correct = false;
@@ -107,6 +107,8 @@
             $scope.verb.correct = correct;
             $scope.counter = counter;
             $scope.correct_counter = correct_counter;
+			
+			$scope.percentage = (correct_counter / counter) * 100;
 
             $scope.verb.id = counter;
             $scope.verb.audio = ngAudio.load("audio/"+$scope.verb.base+".mp3");
@@ -140,7 +142,7 @@
     <md-input-container style="margin-left: 35px;">
         <button type="submit" style="display:none;">Ok</button>
         <p class="md-display-1">
-            {{correct_counter}}/{{counter}}</p>
+            {{correct_counter}}/{{counter}}<span ng-if="percentage">/{{percentage |number: 0}}%<span></p>
     </md-input-container>
 </form>
 <md-list>
