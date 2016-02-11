@@ -92,13 +92,13 @@
             correct_counter += 1;
 
 
-            if ($scope.verb.past != $scope.verb.form_pastsimple.toLowerCase() ) {
+            if ($scope.verb.past != $scope.verb.form_pastsimple.toLowerCase()) {
                 correct = false;
                 correct_counter -= .5;
                 $scope.verb.past_correct = false;
             }
 
-            if ($scope.verb.participles[0] != $scope.verb.form_pastparticiple.toLowerCase()  && $scope.verb.participles[1]  != $scope.verb.form_pastparticiple.toLowerCase() ) {
+            if ($scope.verb.participles[0] != $scope.verb.form_pastparticiple.toLowerCase() && $scope.verb.participles[1] != $scope.verb.form_pastparticiple.toLowerCase()) {
                 correct = false;
                 correct_counter -= .5;
                 $scope.verb.participle_correct = false;
@@ -107,11 +107,11 @@
             $scope.verb.correct = correct;
             $scope.counter = counter;
             $scope.correct_counter = correct_counter;
-			
-			$scope.percentage = (correct_counter / counter) * 100;
+
+            $scope.percentage = (correct_counter / counter) * 100;
 
             $scope.verb.id = counter;
-            $scope.verb.audio = ngAudio.load("audio/"+$scope.verb.base+".mp3");
+            $scope.verb.audio = ngAudio.load("audio/" + $scope.verb.base + ".mp3");
             $scope.lastverbs.unshift($scope.verb);
 
             getRandomBaseVerb();
@@ -122,7 +122,13 @@
             focus("pastsimple");
         }
 
-
+        $scope.tableFilter = function (item) {
+            if ($scope.only_incorrect) {
+                return item.correct == false ;
+            } else {
+                return true;
+            }
+        };
     });
 </script>
 <form ng-submit="submit()" id="irregular_form" name="irregular_form">
@@ -140,27 +146,32 @@
         <label for="pastparticiple">past participle</label>
     </md-input-container>
     <md-input-container style="margin-left: 35px;">
-        <button type="submit" style="display:none;">Ok</button>
         <p class="md-display-1">
-            {{correct_counter}}/{{counter}}<span ng-if="percentage">/{{percentage |number: 0}}%<span></p>
+            {{correct_counter}}/{{counter}}<span ng-if="percentage">/{{percentage |number: 0}}%</span></p>
     </md-input-container>
+    <button type="submit" style="display:none;">Ok</button>
+
 </form>
+<md-input-container>
+    <md-checkbox ng-model="only_incorrect">Show only incorrect verbs</md-checkbox>
+</md-input-container>
 <md-list>
-    <md-list-item ng-repeat="verb in lastverbs">
-		
-        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style = "cursor: pointer;">#{{verb.id}} {{ verb.base }} </p>
+    <md-list-item ng-repeat="verb in lastverbs | filter : tableFilter ">
 
+        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;">#{{verb.id}} {{
+            verb.base }} </p>
 
-        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style = "cursor: pointer;" class="{{pastsimpleClass}}"><span ng-if="verb.past_correct == false" class="line-through">
+        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;"
+           class="{{pastsimpleClass}}"><span ng-if="verb.past_correct == false" class="line-through">
         {{ verb.form_pastsimple}}
       </span> {{ verb.past }} </p>
 
 
-        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style = "cursor: pointer;" class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
+        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;"
+           class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
         {{ verb.form_pastparticiple}}
       </span> {{ verb.participles[0] }} </p>
-	  
-	  <span>
+
 
       <span ng-if="verb.correct==true">
       <md-icon style="color:blue;"> done</md-icon>
