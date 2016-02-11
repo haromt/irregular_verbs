@@ -1,4 +1,4 @@
-Simple application  to practice irregular verbs.
+Simple application to practice irregular verbs.
 
 ## Getting Started
 
