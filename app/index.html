@@ -145,18 +145,20 @@
 </form>
 <md-list>
     <md-list-item ng-repeat="verb in lastverbs">
+		
+        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style = "cursor: pointer;">#{{verb.id}} {{ verb.base }} </p>
 
-        <p ng-mouseover="verb.audio.play()">#{{verb.id}} {{ verb.base }} </p>
 
-
-        <p class="{{pastsimpleClass}}"><span ng-if="verb.past_correct == false" class="line-through">
+        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style = "cursor: pointer;" class="{{pastsimpleClass}}"><span ng-if="verb.past_correct == false" class="line-through">
         {{ verb.form_pastsimple}}
       </span> {{ verb.past }} </p>
 
 
-        <p class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
+        <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style = "cursor: pointer;" class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
         {{ verb.form_pastparticiple}}
       </span> {{ verb.participles[0] }} </p>
+	  
+	  <span>
 
       <span ng-if="verb.correct==true">
       <md-icon style="color:blue;"> done</md-icon>
