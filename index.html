@@ -187,7 +187,9 @@
                 <p class="md-display-1">
                     {{correct_counter}}/{{counter}}<span ng-if="percentage">/{{percentage |number: 0}}%</span></p>
             </md-input-container>
-            <button type="submit" style="display:none;">Ok</button>
+            <input type="submit"
+                   style="position: absolute; left: -9999px; width: 1px; height: 1px;"
+                   tabindex="-1" />
 
         </form>
         <md-input-container>
