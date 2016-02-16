@@ -172,7 +172,7 @@
         <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;"
            class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
         {{ verb.form_pastparticiple}}
-      </span> {{ verb.participles[0] }} </p>
+      </span> {{ verb.participles[0] }} <span ng-if="verb.participles[1]">/{{verb.participles[1]}}</span></p>
 
 
       <span ng-if="verb.correct==true">
