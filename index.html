@@ -132,7 +132,7 @@
 
         $scope.tableFilter = function (item) {
             if ($scope.only_incorrect) {
-                return item.correct == false ;
+                return item.correct == false;
             } else {
                 return true;
             }
@@ -168,15 +168,17 @@
 
         <h4>Step one</h4>
         <p>Lean the verbs by heart: <a href="https://goo.gl/j1Z2vh">download</a></p>
-        <h4>Step two</h4><p>Practice!</p>
+        <h4>Step two</h4>
+        <p>Practice!</p>
         <form ng-submit="submit()" id="irregular_form" name="irregular_form">
 
             <md-input-container>
-               <input type="text" id="base" ng-model="verb.base"/>
+                <input type="text" id="base" ng-model="verb.base"/>
             </md-input-container>
 
             <md-input-container>
-                <input type="text" ng-model="verb.form_pastsimple" id="pastsimple" class="pull-right" required autofocus/>
+                <input type="text" ng-model="verb.form_pastsimple" id="pastsimple" class="pull-right" required
+                       autofocus/>
                 <label for="pastsimple">past simple</label>
             </md-input-container>
 
@@ -190,7 +192,7 @@
             </md-input-container>
             <input type="submit"
                    style="position: absolute; left: -9999px; width: 1px; height: 1px;"
-                   tabindex="-1" />
+                   tabindex="-1"/>
 
         </form>
         <md-input-container>
@@ -199,7 +201,8 @@
         <md-list>
             <md-list-item ng-repeat="verb in lastverbs | filter : tableFilter ">
 
-                <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;">#{{verb.id}} {{
+                <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;">
+                    #{{verb.id}} {{
                     verb.base }} </p>
 
                 <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;"
@@ -211,7 +214,7 @@
                 <p ng-mouseover="verb.audio.play()" ng-mouseleave="verb.audio.stop()" style="cursor: pointer;"
                    class="{{pastparticipleClass}}"><span ng-if="verb.participle_correct == false" class="line-through">
         {{ verb.form_pastparticiple}}
-      </span> {{ verb.participles[0] }} </p>
+      </span> {{ verb.participles[0] }} <span ng-if="verb.participles[1]">/{{verb.participles[1]}}</span></p>
 
 
       <span ng-if="verb.correct==true">
